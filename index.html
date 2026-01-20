@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador SGBD - Árvores B e B+ (Sketch Mode)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css">
+    
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    
+    <script src="https://unpkg.com/rough-notation/lib/rough-notation.iife.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="selection-screen" class="container row flex-center full-height">
+        <div class="col-8 col-md-6 text-center">
+            <div class="paper border border-3 border-primary" style="padding: 2rem;">
+                <h1 class="title-font">Projeto SGBD</h1>
+                <p>Simulação de Estruturas de Indexação (Estilo Silberschatz)</p>
+                
+                <div class="row flex-center" style="margin-top: 2rem; gap: 1rem;">
+                    <div class="col-6 col-sm-5">
+                        <div class="card" style="cursor: pointer;" onclick="selecionarArvore('B')">
+                            <div class="card-body">
+                                <h4 class="card-title">Árvore B</h4>
+                                <p class="card-text">Chaves e dados em todos os níveis.</p>
+                                <button class="paper-btn btn-primary btn-small btn-block">Selecionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-5">
+                        <div class="card" style="cursor: pointer;" onclick="selecionarArvore('B+')">
+                            <div class="card-body">
+                                <h4 class="card-title">Árvore B+</h4>
+                                <p class="card-text">Dados apenas nas folhas + Lista encadeada.</p>
+                                <button class="paper-btn btn-secondary btn-small btn-block">Selecionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted footer-text">Trabalho Prático - Implementação de BD</p>
+        </div>
+    </div>
+
+    <div id="simulation-screen" class="container-fluid hidden">
+        
+        <div class="row flex-middle" style="padding: 1rem 0;">
+            <div class="col-2">
+                <button class="paper-btn btn-small" onclick="voltarSelecao()">← Voltar</button>
+            </div>
+            <div class="col-6 text-center">
+                <h3 id="titulo-arvore" class="margin-0">Simulação</h3>
+            </div>
+            <div class="col-4 text-right stats-box">
+                <span class="badge warning" title="Leituras de Disco">R: <b id="read-count">0</b></span>
+                <span class="badge secondary" title="Escritas em Disco">W: <b id="write-count">0</b></span>
+                <span class="badge success">Tempo: <b id="timer-display">0ms</b></span>
+            </div>
+        </div>
+
+        <div class="paper border border-3 pad-small controls-wrapper">
+            <div class="toolbar-container">
+                
+                <div class="control-section config-section">
+                    <h5 class="section-label">Config</h5>
+                    <div class="flex-row">
+                        <div class="form-group margin-0">
+                            <label for="fanout">Fanout (n):</label>
+                            <input type="number" id="fanout" value="3" min="3" max="10">
+                        </div>
+                        <button class="paper-btn btn-small btn-danger" onclick="reiniciarArvore()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <div class="control-section action-section">
+                    <h5 class="section-label">Comandos</h5>
+                    <div class="flex-row centered">
+                        <input type="number" id="valorInput" placeholder="Valor..." class="input-action">
+                        <button class="paper-btn btn-primary btn-small" onclick="inserir()">Inserir</button>
+                        <button class="paper-btn btn-danger btn-small" onclick="remover()">Remover</button>
+                        <button class="paper-btn btn-success btn-small" onclick="buscar()">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <div class="control-section tools-section">
+                    <h5 class="section-label">Extras</h5>
+                    
+                    <div class="tool-row">
+                        <label for="speedRange">Velocidade:</label>
+                        <input type="range" id="speedRange" min="0" max="1000" value="500">
+                    </div>
+
+                    <div class="tool-row flex-end">
+                        <input type="number" id="qtdAleatorio" placeholder="Qtd" style="width: 60px; margin-right: 5px;">
+                        <button class="paper-btn btn-warning btn-small" onclick="gerarAleatorio()">Auto</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row flex-center" style="margin: 10px 0;">
+            <div class="col-12 text-center">
+                <span id="status-text" class="status-highlighter">Aguardando comando...</span>
+            </div>
+        </div>
+        
+        <div class="paper" style="height: 60vh; padding: 0;">
+            <div id="mynetwork" style="width: 100%; height: 100%;"></div>
+        </div>
+    </div>
+
+    <script src="treeB.js"></script>
+    <script src="treeBPlus.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
